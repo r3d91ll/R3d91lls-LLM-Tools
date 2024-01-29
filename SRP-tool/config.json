@@ -1,0 +1,43 @@
+{
+    "web_scraper": {
+        "start_url": "https://microsoft.github.io/autogen/docs/Getting-Started",
+        "allowed_domains": ["microsoft.github.io/autogen/"],
+        "docs_dir": "/home/todd6585/git/output/autogen-docs"
+    },
+    "content_processor": {
+        "base_directory": "HTML-files",
+        "spr_settings": {
+            "assistant_id": "asst_oKlrkMCViaRtcLnFewRQJFUs",
+            "spr_output_dir": "SPR-files"
+        }
+    },
+    "duplicate_file_finder": {
+        "duplicate_check_dir": "HTML_files"
+    },
+    "markdown_cleaner": {
+        "cleaning_directory": "MD-files",
+        "markdown_regex_patterns": [
+            "[😀-🙏🌀-🗿🚀-🛿🇨-🇿✂-➰Ⓜ-🉑]+",
+            "\\[Edit this page.*?\\]\\(.*?\\)",
+            "\\[Previous .*?\\]\\(.*?\\)",
+            "\\[Next .*?\\]\\(.*?\\)",
+            "\\[.*?\\]\\(https://discord.gg/.*?\\)",
+            "\\[.*?\\]\\(https://twitter.com/.*?\\)",
+            "\\[Privacy and Cookies.*?\\]\\(.*?\\)",
+            "`ctrl` `K`",
+            "Copyright ©.*",
+            "⏱",
+            "^\\s*####\\s*$",
+            "^\\s*#*\\s*$"
+        ],
+        "orig_docs_dir": "./HTML-files"
+    },
+    "logging": {
+        "log_file": "SSaC.log",
+        "log_level": "DEBUG"
+    },
+    "rate_limiting": {
+        "calls_per_period": "1",
+        "period_in_seconds": "1"
+    }
+}
