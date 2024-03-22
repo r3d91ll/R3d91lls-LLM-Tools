@@ -1,37 +1,46 @@
 import unittest
-import os
-from shutil import rmtree
+from pathlib import Path
+import shutil
+import logging
 from github_spr_generator import DirectoryManager
 
 class TestDirectoryManager(unittest.TestCase):
-    
+
     def setUp(self):
-        # Set up the base directory for the test (current working directory)
-        self.base_path = os.getcwd()
-        # Set up the clone directory as a subdirectory within the current working directory
-        self.test_clone_dir = os.path.join(self.base_path, "autogen")
-        self.repo_name = "autogen"
-        # Initialize the DirectoryManager with the base directory as the current working directory
-        self.directory_manager = DirectoryManager(self.test_clone_dir, self.base_path)
+        # Setup paths for the test
+        self.clone_directory = Path("autogen")
+        self.base_directory = Path(".")
 
-    # def tearDown(self):
-    #     # Clean up created directories after tests
-    #     SPREnabled_dir = os.path.join(self.base_path, f"SPREnabled-{self.repo_name}")
-    #     working_dir = os.path.join(self.base_path, f"working-{self.repo_name}")
-    #     if os.path.exists(SPREnabled_dir):
-    #         rmtree(SPREnabled_dir)
-    #     if os.path.exists(working_dir):
-    #         rmtree(working_dir)
+        # Initialize DirectoryManager
+        self.manager = DirectoryManager(clone_directory=self.clone_directory, base_directory=self.base_directory)
 
-    def test_directory_creation(self):
-        # Test whether the directories are created correctly
-        self.directory_manager.create_directories()
-        SPREnabled_dir = os.path.join(self.base_path, f"SPREnabled-{self.repo_name}")
-        working_dir = os.path.join(self.base_path, f"working-{self.repo_name}")
-        self.assertTrue(os.path.exists(SPREnabled_dir))
-        self.assertTrue(os.path.exists(working_dir))
+        # Ensure base directories exist
+        self.base_directory.mkdir(parents=True, exist_ok=True)
 
-    # Additional tests...
+        # Add mock content to clone_directory for testing
+        (self.clone_directory / "test_dir").mkdir(exist_ok=True)
+        (self.clone_directory / "test_dir/test_file.txt").touch()
+
+    def test_create_directories(self):
+        # Test creation of directories and mirroring structure
+        self.manager.create_directories()
+        self.assertTrue((self.manager.spr_directory / "test_dir").exists())
+        self.assertTrue((self.manager.spr_directory / "test_dir/test_file.txt").exists())
+        self.assertTrue((self.manager.working_directory / "test_dir").exists())
+
+    def test_remove_working_directory(self):
+        # Test removal of working directory
+        self.manager.create_directories()
+        self.manager.remove_working_directory()
+        self.assertFalse(self.manager.working_directory.exists())
+
+    def tearDown(self):
+        # Cleanup after tests but keep the autogen directory intact
+        if self.base_directory.exists() and self.base_directory.is_dir():
+            try:
+                shutil.rmtree(self.base_directory)
+            except Exception as e:
+                logging.error(f"Error occurred during tearDown: {e}")
 
 if __name__ == '__main__':
     unittest.main()
