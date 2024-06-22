@@ -1,5 +1,5 @@
 huggingface:
-  api_token: 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
+  api_token: your_api_token_here
   models_dir: /models
 
 logging:
