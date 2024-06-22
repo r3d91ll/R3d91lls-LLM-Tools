@@ -118,7 +118,7 @@ Adjust these values based on your system's capabilities.
 
 1. Start the application:
 
-   ```
+   ```bash
    docker-compose up
    ```
 
@@ -188,4 +188,3 @@ Adjust these values based on your system's capabilities.
 ## Contributing
 
 Contributions to MyLLM are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
