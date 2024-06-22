@@ -33,6 +33,8 @@ MyLLM is a sophisticated project that allows you to download, load, and interact
 
 ### Building the Base Image
 
+NOTE: This part may take a while. Part of this build process is a compile from source of the flash_attn python package.
+
 1. Make the build script executable:
 
    ```bash
