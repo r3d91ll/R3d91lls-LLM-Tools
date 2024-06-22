@@ -189,6 +189,3 @@ Adjust these values based on your system's capabilities.
 
 Contributions to MyLLM are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
-## License
-
-[Add your chosen license here]
