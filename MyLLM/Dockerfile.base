@@ -1,0 +1,44 @@
+# Base Dockerfile
+FROM pytorch/pytorch:2.3.1-cuda12.1-cudnn8-devel
+
+# Set working directory
+WORKDIR /app
+
+# Create a non-root user
+RUN useradd -m -u 1000 app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set CUDA_HOME environment variable
+ENV CUDA_HOME="/usr/local/cuda"
+ENV PATH="${CUDA_HOME}/bin:${PATH}"
+ENV LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}"
+
+# Switch to non-root user
+USER app
+
+# Set environment variables
+ENV PATH="/home/app/.local/bin:${PATH}"
+ENV PYTHONPATH="/home/app/.local/lib/python3.9/site-packages:${PYTHONPATH}"
+
+# Install core dependencies
+RUN pip install --user --no-cache-dir packaging wheel setuptools
+
+# Copy requirements file
+COPY --chown=app:app requirements.txt .
+
+# Install dependencies
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# Accept MAX_JOBS as a build argument
+ARG MAX_JOBS=36
+
+# Install flash_attn with multiple cores
+RUN FLASH_ATTENTION_FORCE_BUILD=TRUE MAX_JOBS=$MAX_JOBS pip install --user --no-cache-dir flash_attn
+
+# This image can be used as a base for the actual application

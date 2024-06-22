@@ -1,0 +1,12 @@
+huggingface:
+  api_token: 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
+  models_dir: /models
+
+logging:
+  level: INFO
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+model_defaults:
+  max_length: 2048
+  num_beams: 3
+  early_stopping: true

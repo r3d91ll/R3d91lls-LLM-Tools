@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  cli-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myllm-app:latest
+    environment:
+      - HF_API_TOKEN
+    volumes:
+      - ./models:/models
+      - ./config.yaml:/app/config.yaml
+    user: "1000:1000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    stdin_open: true
+    tty: true
+    entrypoint: ["python", "-u", "myllm.py"]
