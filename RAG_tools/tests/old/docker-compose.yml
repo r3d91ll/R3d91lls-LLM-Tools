@@ -1,0 +1,33 @@
+networks:
+  ragtools_network:
+    name: ${DOCKER_NETWORK_NAME}
+services:
+  neo4j:
+    container_name: ${NEO4J_CONTAINER_NAME}
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH}
+    image: neo4j:latest
+    networks:
+    - ragtools_network
+    ports:
+    - ${NEO4J_HTTP_PORT}:7474
+    - ${NEO4J_BOLT_PORT}:7687
+    volumes:
+    - ./db_data/neo4j:/data
+  postgres:
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    image: ankane/pgvector
+    networks:
+    - ragtools_network
+    ports:
+    - ${POSTGRES_PORT}:5432
+    volumes:
+    - ./db_data/postgres:/var/lib/postgresql/data
+version: '3.8'
+volumes:
+  neo4j_data: null
+  postgres_data: null

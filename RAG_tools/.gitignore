@@ -1,0 +1,6 @@
+db_data/
+.conda/
+.vscode/
+config/db_data
+old-code/
+__pychache__/
