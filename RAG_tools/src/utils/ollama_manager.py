@@ -14,12 +14,22 @@ class OllamaManager:
         self.model = self.config.OLLAMA_LLM_MODEL
         self.gpu = self.config.OLLAMA_LLM_GPU
         
-        self.models_path = self.config.OLLAMA_MODELS_PATH or os.path.expanduser('~/ollama_models')
-        self.llm_path = self.config.OLLAMA_LLM_PATH or os.path.join(self.models_path, 'llm')
+        self.models_path = self.config.OLLAMA_MODELS_PATH
+        self.llm_path = self.config.OLLAMA_LLM_PATH
+        
+        print("OllamaManager initialized with:")
+        print(f"container_name: {self.container_name}")
+        print(f"port: {self.port}")
+        print(f"model: {self.model}")
+        print(f"gpu: {self.gpu}")
+        print(f"models_path: {self.models_path}")
+        print(f"llm_path: {self.llm_path}")
         
         # Ensure directories exist
-        os.makedirs(self.models_path, exist_ok=True)
-        os.makedirs(self.llm_path, exist_ok=True)
+        if self.models_path:
+            os.makedirs(self.models_path, exist_ok=True)
+        if self.llm_path:
+            os.makedirs(self.llm_path, exist_ok=True)
         
         # Initialize DockerComposeManager
         docker_compose_path = os.path.join('..', 'config', 'docker-compose.yml')
@@ -29,20 +39,19 @@ class OllamaManager:
         logging.info(f"Using model: {self.model} on port: {self.port}")
 
     def generate_response(self, prompt):
+        logging.info(f"Generating response for prompt: {prompt}")
         try:
-            payload = {
-                'model': self.model,
-                'prompt': prompt
-            }
-            logging.debug(f"Sending request to Ollama API with payload: {payload}")
-            logging.debug(f"API URL: http://localhost:{self.port}/api/generate")
+            url = f'http://localhost:{self.port}/api/generate'
+            payload = {'model': self.model, 'prompt': prompt}
+            logging.info(f"Sending request to {url} with payload: {payload}")
             
-            response = requests.post(
-                f'http://localhost:{self.port}/api/generate',
-                json=payload,
-                stream=True
-            )
-            logging.debug(f"Response status code: {response.status_code}")
+            response = requests.post(url, json=payload, stream=True)
+            logging.info(f"Response status code: {response.status_code}")
+            
+            if response.status_code != 200:
+                logging.error(f"Error response: {response.text}")
+                return f"Error: {response.status_code} {response.reason} - {response.text}"
+            
             response.raise_for_status()
             
             full_response = ""
@@ -83,22 +92,21 @@ class OllamaManager:
             return False
 
     def pull_model(self):
-        logging.debug(f"Starting pull_model for model: {self.model}")
+        logging.info(f"Pulling model {self.model}...")
         logging.debug(f"self.models_path: {self.models_path}")
         logging.debug(f"self.model: {self.model}")
         
+        if not self.models_path:
+            logging.error("models_path is not set. Cannot pull model.")
+            return
+
         try:
             model_path = os.path.join(self.models_path, 'models', 'manifests', 'registry.ollama.ai', 'library', self.model)
             logging.info(f"Checking for model at path: {model_path}")
         except Exception as e:
             logging.error(f"Error constructing model path: {str(e)}")
-            raise
-        
-        if os.path.exists(model_path):
-            logging.info(f"Model {self.model} already exists. Skipping download.")
             return
 
-        logging.info(f"Pulling model {self.model}...")
         try:
             response = requests.post(f'http://localhost:{self.port}/api/pull', json={'name': self.model}, stream=True)
             response.raise_for_status()
