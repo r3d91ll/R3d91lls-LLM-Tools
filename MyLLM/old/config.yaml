@@ -1,0 +1,28 @@
+embedding:
+  model_name: "microsoft/codebert-base"
+  device: "cuda"  # Use "cuda" if you have a GPU available
+  dimensions: 768  # Ensure this matches your model's embedding size
+
+paths:
+  codebase: "/home/todd/git/personal/ollama"  # Update this with the path to your codebase
+
+file_patterns:
+  code: ["*.py"]  # You can add more patterns if needed, e.g., "*.js", "*.java"
+  config: ["*.yaml", "*.yml", "*.json", "*.xml", "*.toml"]
+
+processing:
+  max_workers: 4  # Adjust based on your machine's capabilities
+
+indexing:
+  last_indexed_time: 0  # Timestamp of the last indexed time; initialize to 0 for the first run
+
+logging:
+  level: "INFO"
+  file: "indexing.log"  # Log file for the script
+
+redis:
+  host: "localhost"
+  port: 6379
+
+database:
+  url: "postgresql://rag_user:rag_password@localhost:5432/rag_test_db"  # Connection string to your PostgreSQL database

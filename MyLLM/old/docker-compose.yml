@@ -9,17 +9,16 @@ services:
     volumes:
       - redis_data:/data
     command: ["redis-server", "--appendonly", "yes"]
-    restart: unless-stopped
 
   postgres:
     image: ankane/pgvector:latest
     container_name: pgvector-db
     environment:
-      POSTGRES_USER: iris
+      POSTGRES_USER: rag_user
       POSTGRES_PASSWORD: rag_password
       POSTGRES_DB: rag_test_db
     ports:
-      - "5435:5432"
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -27,18 +26,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
 volumes:
   redis_data:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /mnt/raid0/redis_data
   pg_data:
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /mnt/raid0/pg_data

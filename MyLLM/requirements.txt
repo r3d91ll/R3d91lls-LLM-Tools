@@ -1,6 +1,12 @@
-transformers
-sentencepiece
-protobuf
-colorama
+# Base packages
+numpy
 pyyaml
-huggingface_hub
+sentence-transformers
+
+# FAISS with GPU support
+faiss-gpu
+
+# Conda specific package for ensuring compatibility
+cudatoolkit=11.2  # Specify the appropriate CUDA version for your GPU
+
+# Optional: If you are working on a machine with specific CUDA version, adjust the version accordingly

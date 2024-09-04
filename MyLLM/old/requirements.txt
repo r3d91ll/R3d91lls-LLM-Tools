@@ -1,0 +1,6 @@
+transformers
+sentencepiece
+protobuf
+colorama
+pyyaml
+huggingface_hub

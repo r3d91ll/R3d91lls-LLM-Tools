@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "myllm"
+version = "0.1.0"
+description = ""
+authors = ["r3d91ll <r3d91ll@bucy-medrano.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sentence-transformers = "^3.0.1"
+faiss-gpu = "^1.7.2"
+numpy = "<2"
+pyyaml = "^6.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,7 @@
+gradio
+ollama
+langchain
+openai
+pgvector
+sqlalchemy
+psycopg2-binary

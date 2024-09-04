@@ -37,7 +37,8 @@ echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 
 # I/O Scheduler (assuming NVMe SSD, adjust if different)
 print_message "Setting I/O Scheduler"
-echo 'none' | sudo tee /sys/block/nvme0n1/queue/scheduler
+for i in {0..8}; do echo 'none' | sudo tee /sys/block/nvme${i}n1/queue/scheduler; done
+for i in {0..8}; do cat /sys/block/nvme${i}n1/queue/scheduler; done
 
 # Network Optimization
 print_message "Network Optimization"
@@ -51,13 +52,10 @@ sudo apt update
 sudo apt install -y nvidia-driver-535 nvidia-utils-535
 
 # Install CUDA 12.2
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
-sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda-repo-ubuntu2204-12-2-local_12.2.0-535.54.03-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2204-12-2-local_12.2.0-535.54.03-1_amd64.deb
-sudo cp /var/cuda-repo-ubuntu2204-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
-sudo apt update
-sudo apt install -y cuda-12-2
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cuda-toolkit-12-2
 
 # Set up CUDA environment variables
 echo 'export PATH=/usr/local/cuda-12.2/bin${PATH:+:${PATH}}' >> $HOME/.bashrc
@@ -99,6 +97,12 @@ sudo update-alternatives --config gcc
 # Install development tools
 print_message "Installing development tools"
 sudo apt install -y gdb valgrind
+
+# Install Ollama
+print_message "Installing Ollama"
+curl -O https://ollama.com/download/Ollama-linux.zip
+unzip Ollama-linux.zip
+sudo mv ollama /usr/local/bin/ollama
 
 # Final system update
 print_message "Final system update"

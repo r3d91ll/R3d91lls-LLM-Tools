@@ -1,12 +1,9 @@
-huggingface:
-  api_token: your_api_token_here
-  models_dir: /models
+embedding:
+  model_name: 'all-minilm'
+  dimension: 384  # Ensure this matches the embedding size
 
-logging:
-  level: INFO
-  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+paths:
+  documents_directory: '/home/todd/git/personal/MemGPT/docs'
 
-model_defaults:
-  max_length: 2048
-  num_beams: 3
-  early_stopping: true
+search:
+  top_k: 5
